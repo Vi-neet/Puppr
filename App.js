@@ -1,45 +1,38 @@
-import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, Image } from "react-native";
-import axios from "axios";
+import { useEffect, useState } from "react";
+import data from "./data.json";
 
 export default function App() {
-  const [images, setImages] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const shuffleArray = (array) => {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-  };
+  const [currentImageUrl, setCurrentImageUrl] = useState("");
 
   useEffect(() => {
-    axios
-      .get("https://thepetnest.com/api/v1/pets?q[category_id_eq]=1")
-      .then((response) => {
-        const imageUrls = response.data.data.map((pet) => pet.images[0].url);
-        const shuffledImageUrls = shuffleArray(imageUrls);
-        setImages(shuffledImageUrls);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
+    // Function to get random pet and image
+    const getRandomImage = () => {
+      const pets = data.data;
+      const randomPet = pets[Math.floor(Math.random() * pets.length)];
+      const randomImage = randomPet.images[Math.floor(Math.random() * randomPet.images.length)];
+      setCurrentImageUrl(randomImage.url);
+    };
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 10000);
+    // Initial image
+    getRandomImage();
 
+    // Set up interval
+    const interval = setInterval(getRandomImage, 10000);
+
+    // Cleanup interval
     return () => clearInterval(interval);
-  }, [images]);
+  }, []);
 
   return (
     <View style={styles.container}>
-      {images.length > 0 ? (
-        <Image source={{ uri: images[currentIndex] }} style={styles.image} />
+      {currentImageUrl ? (
+        <Image
+          source={{ uri: currentImageUrl }}
+          style={styles.image}
+          resizeMode="cover"
+        />
       ) : (
         <Text>Loading...</Text>
       )}
@@ -58,6 +51,6 @@ const styles = StyleSheet.create({
   image: {
     width: 300,
     height: 300,
-    resizeMode: "contain",
+    borderRadius: 10,
   },
 });
