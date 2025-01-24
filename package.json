@@ -9,12 +9,11 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "@expo/metro-runtime": "~4.0.0",
+    "@expo/metro-runtime": "^4.0.1",
     "@expo/vector-icons": "^14.0.4",
     "axios": "^1.7.9",
     "cors": "^2.8.5",
     "expo": "^52.0.27",
-    "expo-cli": "^6.3.12",
     "expo-status-bar": "~2.0.1",
     "express": "^4.21.2",
     "pg": "^8.13.1",
