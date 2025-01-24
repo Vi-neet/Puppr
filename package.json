@@ -10,15 +10,19 @@
   },
   "dependencies": {
     "@expo/metro-runtime": "~4.0.0",
+    "@expo/vector-icons": "^14.0.4",
     "axios": "^1.7.9",
     "cors": "^2.8.5",
-    "expo": "^52.0.25",
+    "expo": "^52.0.27",
+    "expo-cli": "^6.3.12",
     "expo-status-bar": "~2.0.1",
     "express": "^4.21.2",
     "pg": "^8.13.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-native": "0.76.6",
+    "react-native-gesture-handler": "^2.22.1",
+    "react-native-reanimated": "^3.16.7",
     "react-native-web": "~0.19.13"
   },
   "devDependencies": {

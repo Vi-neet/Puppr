@@ -1,43 +1,41 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import { useEffect, useState } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import SwipeableImage from "./components/SwipeableImage";
 import data from "./data.json";
 
 export default function App() {
-  const [currentImageUrl, setCurrentImageUrl] = useState("");
+  const [validImageUrls, setValidImageUrls] = useState([]);
+  const [showEndMessage, setShowEndMessage] = useState(false);
 
   useEffect(() => {
-    // Function to get random pet and image
-    const getRandomImage = () => {
-      const pets = data.data;
-      const randomPet = pets[Math.floor(Math.random() * pets.length)];
-      const randomImage = randomPet.images[Math.floor(Math.random() * randomPet.images.length)];
-      setCurrentImageUrl(randomImage.url);
-    };
-
-    // Initial image
-    getRandomImage();
-
-    // Set up interval
-    const interval = setInterval(getRandomImage, 10000);
-
-    // Cleanup interval
-    return () => clearInterval(interval);
+    // Extract first image URL from each pet
+    const urls = data.data.map(pet => pet.images[0]?.url).filter(Boolean);
+    setValidImageUrls(urls);
+    
+    console.log('First image URL:', urls[0]);
+    console.log('Number of valid images:', urls.length);
   }, []);
 
+  const handleEndOfImages = () => {
+    setShowEndMessage(true);
+  };
+
   return (
-    <View style={styles.container}>
-      {currentImageUrl ? (
-        <Image
-          source={{ uri: currentImageUrl }}
-          style={styles.image}
-          resizeMode="cover"
-        />
-      ) : (
-        <Text>Loading...</Text>
-      )}
-      <StatusBar style="auto" />
-    </View>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <View style={styles.container}>
+        {!showEndMessage && validImageUrls.length > 0 ? (
+          <SwipeableImage 
+            images={validImageUrls} 
+            onEnd={handleEndOfImages}
+          />
+        ) : (
+          <Text style={styles.endMessage}>More pets coming soon...</Text>
+        )}
+        <StatusBar style="auto" />
+      </View>
+    </GestureHandlerRootView>
   );
 }
 
@@ -48,9 +46,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  image: {
-    width: 300,
-    height: 300,
-    borderRadius: 10,
+  endMessage: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#666',
+    textAlign: 'center',
   },
 });
